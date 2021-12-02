@@ -1,3 +1,5 @@
-module github.com/tomonakar/building-modern-web-application-with-go
+module package
 
-go 1.16
+go 1.17
+
+replace package/helpers => ./helpers
