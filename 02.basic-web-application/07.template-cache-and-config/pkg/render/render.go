@@ -2,6 +2,7 @@ package render
 
 import (
 	"bytes"
+	"cache-practice/pkg/config"
 	"fmt"
 	"html/template"
 	"log"
@@ -11,23 +12,28 @@ import (
 
 var functions = template.FuncMap{}
 
+var app *config.AppConfig
+
+// NewTemplates sets the config for the template package
+func NewTemplates(a *config.AppConfig) {
+	app = a
+}
+
 // RenderTemplate renders a template
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	tc, err := CreateTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// get the template cache from the app config
+	tc := app.TemplateCache
 
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Could not get tempate from template cache")
 	}
 
 	buf := new(bytes.Buffer)
 
 	_ = t.Execute(buf, nil)
 
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 	if err != nil {
 		fmt.Println("error writing template to browser", err)
 	}
