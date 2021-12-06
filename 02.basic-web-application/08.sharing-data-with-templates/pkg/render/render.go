@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"cache-practice/pkg/config"
-	"cache-practice/pkg/handlers"
+	"cache-practice/pkg/models"
 )
 
 var functions = template.FuncMap{}
@@ -22,7 +22,7 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 // RenderTemplate renders a template
-func RenderTemplate(w http.ResponseWriter, tmpl string, td handlers.TamplateData) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -40,7 +40,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td handlers.TamplateData
 
 	buf := new(bytes.Buffer)
 
-	_ = t.Execute(buf, nil)
+	_ = t.Execute(buf, td)
 
 	_, err := buf.WriteTo(w)
 	if err != nil {
