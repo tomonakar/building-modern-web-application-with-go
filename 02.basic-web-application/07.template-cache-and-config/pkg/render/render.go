@@ -2,12 +2,13 @@ package render
 
 import (
 	"bytes"
-	"cache-practice/pkg/config"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"cache-practice/pkg/config"
 )
 
 var functions = template.FuncMap{}
@@ -21,8 +22,15 @@ func NewTemplates(a *config.AppConfig) {
 
 // RenderTemplate renders a template
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	// get the template cache from the app config
-	tc := app.TemplateCache
+	var tc map[string]*template.Template
+
+	if app.UseCache {
+
+		// get the template cache from the app config
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
+	}
 
 	t, ok := tc[tmpl]
 	if !ok {

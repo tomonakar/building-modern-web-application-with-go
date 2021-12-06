@@ -1,10 +1,10 @@
-package handler
+package handlers
 
 import (
 	"net/http"
 
-	"split-package/pkg/config"
-	"split-package/pkg/render"
+	"cache-practice/pkg/config"
+	"cache-practice/pkg/render"
 )
 
 // Repo the repository used by the handlers
@@ -28,11 +28,11 @@ func NewHandlers(r *Repository) {
 }
 
 // Home is the handler for the home page
-func Home(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "home.page.tmpl")
 }
 
 // About is the handler for the about page
-func About(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "about.page.tmpl")
 }

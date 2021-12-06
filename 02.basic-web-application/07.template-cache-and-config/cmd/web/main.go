@@ -1,12 +1,13 @@
 package main
 
 import (
-	"cache-practice/pkg/config"
-	"cache-practice/pkg/handlers"
-	"cache-practice/pkg/render"
 	"fmt"
 	"log"
 	"net/http"
+
+	"cache-practice/pkg/config"
+	"cache-practice/pkg/handlers"
+	"cache-practice/pkg/render"
 )
 
 const portNumber = ":8080"
@@ -21,14 +22,15 @@ func main() {
 	}
 
 	app.TemplateCache = tc
+	app.UseCache = false
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
 
-	http.HandleFunc("/", handlers.Home)
-	http.HandleFunc("/about", handlers.About)
+	http.HandleFunc("/", handlers.Repo.Home)
+	http.HandleFunc("/about", handlers.Repo.About)
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 	_ = http.ListenAndServe(portNumber, nil)
