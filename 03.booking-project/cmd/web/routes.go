@@ -3,11 +3,10 @@ package main
 import (
 	"net/http"
 
-	"cache-practice/pkg/config"
-	"cache-practice/pkg/handlers"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/tomonar/booking/pkg/config"
+	"github.com/tomonar/booking/pkg/handlers"
 )
 
 // routes is the application router

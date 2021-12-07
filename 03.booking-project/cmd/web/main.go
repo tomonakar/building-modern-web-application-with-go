@@ -6,11 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"cache-practice/pkg/config"
-	"cache-practice/pkg/handlers"
-	"cache-practice/pkg/render"
-
 	"github.com/alexedwards/scs/v2"
+	"github.com/tomonar/booking/pkg/config"
+	"github.com/tomonar/booking/pkg/handlers"
+	"github.com/tomonar/booking/pkg/render"
 )
 
 const portNumber = ":8080"

@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"cache-practice/pkg/config"
-	"cache-practice/pkg/models"
-	"cache-practice/pkg/render"
+	"github.com/tomonar/booking/pkg/config"
+	"github.com/tomonar/booking/pkg/models"
+	"github.com/tomonar/booking/pkg/render"
 )
 
 // Repo the repository used by the handlers
