@@ -21,5 +21,11 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 
+	// FileServerは、ルートからのファイルシステムのパスを指定して、そのパスに対応するファイルをHTTPリクエストを提供するハンドラを返す
+	// Dirは、特定のディレクトリツリーに限定されたネイティブファイルシステムを提供する
+	fileServer := http.FileServer(http.Dir("./static/"))
+	// StripPrefixは、リクエストURLのパスから指定されたプレフィクスを削除したハンドラを返す
+	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
 	return mux
 }
