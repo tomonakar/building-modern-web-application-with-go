@@ -23,6 +23,7 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	// CSRFトークンを作成
 	td.CSRFToken = nosurf.Token(r)
 	return td
 
