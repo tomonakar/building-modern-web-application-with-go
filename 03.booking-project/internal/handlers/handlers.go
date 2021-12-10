@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/tomonar/booking/pkg/config"
-	"github.com/tomonar/booking/pkg/models"
-	"github.com/tomonar/booking/pkg/render"
+	"github.com/tomonar/booking/internal/config"
+	"github.com/tomonar/booking/internal/models"
+	"github.com/tomonar/booking/internal/render"
 )
 
 // Repo the repository used by the handlers

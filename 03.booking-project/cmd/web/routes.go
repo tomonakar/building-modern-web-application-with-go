@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/tomonar/booking/pkg/config"
-	"github.com/tomonar/booking/pkg/handlers"
+	"github.com/tomonar/booking/internal/config"
+	"github.com/tomonar/booking/internal/handlers"
 )
 
 // routes is the application router
