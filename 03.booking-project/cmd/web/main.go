@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/tomonar/booking/internal/config"
 	"github.com/tomonar/booking/internal/handlers"
+	"github.com/tomonar/booking/internal/models"
 	"github.com/tomonar/booking/internal/render"
 )
 
@@ -19,6 +21,11 @@ var session *scs.SessionManager
 
 // main is the main function
 func main() {
+
+	// gobは、Go専用のバイナリシリアライズフォーマット
+	// セッションにReservation型を保存するために、gob.Registerを使用して、Reservation型を登録する
+	// Registerメソッドは初期化時に一度だけ呼び出される
+	gob.Register(models.Reservation{})
 
 	// change this to true when in production
 	app.InProduction = false

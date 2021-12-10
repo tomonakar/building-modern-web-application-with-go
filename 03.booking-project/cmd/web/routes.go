@@ -31,6 +31,7 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/make-reservation", handlers.Repo.Reservation)
 	mux.Post("/make-reservation", handlers.Repo.PostReservation)
+	mux.Get("/reservation-summary", handlers.Repo.ReservationSummary)
 
 	// FileServerは、ルートからのファイルシステムのパスを指定して、そのパスに対応するファイルをHTTPリクエストを提供するハンドラを返す
 	// Dirは、特定のディレクトリツリーに限定されたネイティブファイルシステムを提供する
