@@ -18,6 +18,7 @@ func (f *Form) Valid() bool {
 	return len(f.Errors) == 0
 }
 
+// Required checks for required field
 func (f *Form) Required(fields ...string) {
 	for _, field := range fields {
 		value := f.Get(field)
