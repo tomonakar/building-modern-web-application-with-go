@@ -127,7 +127,7 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
 
-	w.Write([]byte(fmt.Sprintf("start data is %s and end data is #s", start, end)))
+	w.Write([]byte(fmt.Sprintf("start data is %s and end data is %s", start, end)))
 }
 
 type jsonResponse struct {
