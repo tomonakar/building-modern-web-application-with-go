@@ -1,1 +1,6 @@
 .vscode
+coverage.out
+bookings
+run.sh
+.DS_Store
+database.yml

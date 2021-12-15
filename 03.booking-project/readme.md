@@ -20,3 +20,11 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 
 ## ORM
 - [Soda](https://gobuffalo.io/en/docs/db/getting-started/)
+使い方
+
+```
+1. database.yml追加
+2. soda generate fizz <Table_name>
+3. ./migrations/xxx_create_yyy_table.up.fizzを編集
+4. soda migrateでup.fizzのテーブルを作成　（soda migrate downでdown.fizzの状態にする）
+```
