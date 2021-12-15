@@ -13,3 +13,10 @@ This is the repository for my bookings and reservations project.
 go test -v
 go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 ```
+
+## Postgres.app
+- [Postgres.app](https://postgresapp.com/documentation/)
+- [Dbeaver](https://dbeaver.io/download/)
+
+## ORM
+- [Soda](https://gobuffalo.io/en/docs/db/getting-started/)
