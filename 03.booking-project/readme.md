@@ -42,3 +42,5 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 
 ### 途中で読んだものメモ
 - [主キーとIndexについて整理する](https://qiita.com/pirorirori_n712/items/b47ade3fdaf8b4a109ba)
+
+- [Parsing and formatting date/time in Go](https://www.pauladamsmith.com/blog/2011/05/go_time.html)
