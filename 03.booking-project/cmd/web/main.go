@@ -10,6 +10,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/tomonar/booking/internal/config"
+	"github.com/tomonar/booking/internal/driver"
 	"github.com/tomonar/booking/internal/handlers"
 	"github.com/tomonar/booking/internal/helpers"
 	"github.com/tomonar/booking/internal/models"
@@ -25,10 +26,11 @@ var errorLog *log.Logger
 
 // main is the main function
 func main() {
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.SQL.Close()
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
@@ -43,7 +45,7 @@ func main() {
 	}
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 
 	// gobは、Go専用のバイナリシリアライズフォーマット
 	// セッションにReservation型を保存するために、gob.Registerを使用して、Reservation型を登録する
@@ -71,19 +73,26 @@ func run() error {
 
 	app.Session = session
 
+	// connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=booking user=tomohisanakamura password")
+	if err != nil {
+		log.Fatal("Cannot connect to database! Dying...")
+	}
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
-		return err
+		return nil, err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
 
-	return nil
+	return db, nil
 }

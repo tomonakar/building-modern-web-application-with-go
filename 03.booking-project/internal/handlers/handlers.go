@@ -7,10 +7,13 @@ import (
 	"net/http"
 
 	"github.com/tomonar/booking/internal/config"
+	"github.com/tomonar/booking/internal/driver"
 	"github.com/tomonar/booking/internal/forms"
 	"github.com/tomonar/booking/internal/helpers"
 	"github.com/tomonar/booking/internal/models"
 	"github.com/tomonar/booking/internal/render"
+	"github.com/tomonar/booking/internal/repository"
+	"github.com/tomonar/booking/internal/repository/dbrepo"
 )
 
 // Repo the repository used by the handlers
@@ -19,12 +22,14 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // NewRepo  creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
