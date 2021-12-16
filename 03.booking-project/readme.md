@@ -37,5 +37,8 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 2. soda reset を実行しマイグレーションファイルを全て実行
 ```
 
+## PostgreSQLドライバー
+- [pgx](https://github.com/jackc/pgx/wiki/Getting-started-with-pgx)
+
 ### 途中で読んだものメモ
 - [主キーとIndexについて整理する](https://qiita.com/pirorirori_n712/items/b47ade3fdaf8b4a109ba)
