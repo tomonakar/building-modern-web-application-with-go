@@ -23,8 +23,19 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 使い方
 
 ```
+# マイグレーション方法
 1. database.yml追加
-2. soda generate fizz <Table_name>で、マイグレーション用ファイル作成
+2. soda generate fizz <ファイル名>で、マイグレーション用ファイル作成
 3. ./migrations/xxx_create_yyy_table.up.fizzを編集
 4. soda migrateでup.fizz or down.fizzでマイグレーションを実施
 ```
+
+- リセット（マイグレーションファイルの全てを実行）
+
+```
+1. DB接続を全て切る
+2. soda reset を実行しマイグレーションファイルを全て実行
+```
+
+### 途中で読んだものメモ
+- [主キーとIndexについて整理する](https://qiita.com/pirorirori_n712/items/b47ade3fdaf8b4a109ba)
