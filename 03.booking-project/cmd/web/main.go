@@ -51,6 +51,10 @@ func run() (*driver.DB, error) {
 	// セッションにReservation型を保存するために、gob.Registerを使用して、Reservation型を登録する
 	// Registerメソッドは初期化時に一度だけ呼び出される
 	gob.Register(models.Reservation{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	// gob.Register(models.RoomRestriction{})
 
 	// change this to true when in production
 	app.InProduction = false
@@ -75,7 +79,7 @@ func run() (*driver.DB, error) {
 
 	// connect to database
 	log.Println("Connecting to database...")
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=booking user=tomohisanakamura password")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=tomohisanakamura password=")
 	if err != nil {
 		log.Fatal("Cannot connect to database! Dying...")
 	}
@@ -91,7 +95,7 @@ func run() (*driver.DB, error) {
 
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
 
 	return db, nil
