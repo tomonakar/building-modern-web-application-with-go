@@ -46,3 +46,16 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 - [Parsing and formatting date/time in Go](https://www.pauladamsmith.com/blog/2011/05/go_time.html)
 
 - [GoでMySQLにアクセスしてみる](https://kazuhira-r.hatenablog.com/entry/2021/03/16/223253)
+
+
+
+### マイグレーションメモ
+
+```
+soda generate fizz AddNotNullReservationIDForRestrictions
+
+soda generate sql SeedRoomsTable
+
+soda generate sql SeedRestrictions
+
+```
