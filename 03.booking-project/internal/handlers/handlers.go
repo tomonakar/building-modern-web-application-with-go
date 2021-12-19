@@ -10,7 +10,6 @@ import (
 	"github.com/tomonar/booking/internal/config"
 	"github.com/tomonar/booking/internal/driver"
 	"github.com/tomonar/booking/internal/forms"
-	"github.com/tomonar/booking/internal/helpers"
 	"github.com/tomonar/booking/internal/models"
 	"github.com/tomonar/booking/internal/render"
 	"github.com/tomonar/booking/internal/repository"
@@ -87,8 +86,8 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	ed := res.EndDate.Format("2006-01-02")
 
 	stringMap := make(map[string]string)
-	stringMap["startDate"] = sd
-	stringMap["endDate"] = ed
+	stringMap["start_date"] = sd
+	stringMap["end_date"] = ed
 
 	data := make(map[string]interface{})
 	data["reservation"] = res
@@ -105,7 +104,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse form!")
-		helpers.ServerError(w, err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -114,7 +113,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	// Goの日付フォーマットについて
 	// @see https://www.pauladamsmith.com/blog/2011/05/go_time.html
-	// 2021-12-12 -- 01/02 03:04:05PM '06 --0700
+	// 2020-01-01 -- 01/02 03:04:05PM '06 -0700
 
 	layout := "2006-01-02"
 
@@ -142,8 +141,8 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	reservation := models.Reservation{
 		FirstName: r.Form.Get("first_name"),
 		LastName:  r.Form.Get("last_name"),
-		Email:     r.Form.Get("email"),
 		Phone:     r.Form.Get("phone"),
+		Email:     r.Form.Get("email"),
 		StartDate: startDate,
 		EndDate:   endDate,
 		RoomID:    roomID,
@@ -151,7 +150,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	form := forms.New(r.PostForm)
 
-	form.Required("first_name", "last_name", "email", "phone")
+	form.Required("first_name", "last_name", "email")
 	form.MinLength("first_name", 3)
 	form.IsEmail("email")
 
@@ -195,6 +194,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	// セッションにデータ保存後に、サマリーページにリダイレクトしている
 	// StatusSeeOtherは303
 	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
+
 }
 
 // Generals renders the room page

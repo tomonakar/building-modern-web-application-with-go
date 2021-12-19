@@ -37,6 +37,13 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 2. soda reset を実行しマイグレーションファイルを全て実行
 ```
 
+- データのシード
+
+```
+soda generate sql SeedRoomsTable
+
+```
+
 ## PostgreSQLドライバー
 - [pgx](https://github.com/jackc/pgx/wiki/Getting-started-with-pgx)
 
