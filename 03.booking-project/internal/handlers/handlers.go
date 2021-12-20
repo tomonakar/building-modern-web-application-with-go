@@ -25,11 +25,19 @@ type Repository struct {
 	DB  repository.DatabaseRepo
 }
 
-// NewRepo  creates a new repository
+// NewRepo creates a new repository
 func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
 		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
+	}
+}
+
+// NewTestRepo creates a new repository
+func NewTestRepo(a *config.AppConfig) *Repository {
+	return &Repository{
+		App: a,
+		DB:  dbrepo.NewTestingsRepo(a),
 	}
 }
 
@@ -38,28 +46,15 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
-// Home is the handler for the home page
+//Home is the home page handler
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	// remoteIP := r.RemoteAddr
-	// m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
-
 	render.Template(w, r, "home.page.tmpl", &models.TemplateData{})
 }
 
-// About is the handler for the about page
+// About is the about page handler
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	// perform some logic
-	// stringMap := make(map[string]string)
-	// stringMap["test"] = "test"
-
-	// remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
-	// stringMap["remote_ip"] = remoteIP
-
 	// send the data to the template
 	render.Template(w, r, "about.page.tmpl", &models.TemplateData{})
-	// render.Template(w, r, "about.page.tmpl", &models.TemplateData{
-	// StringMap: stringMap,
-	// })
 }
 
 // Reservation renders the make a reservation page and displays form
@@ -111,8 +106,6 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	sd := r.Form.Get("start_date")
 	ed := r.Form.Get("end_date")
 
-	// Goの日付フォーマットについて
-	// @see https://www.pauladamsmith.com/blog/2011/05/go_time.html
 	// 2020-01-01 -- 01/02 03:04:05PM '06 -0700
 
 	layout := "2006-01-02"
@@ -187,12 +180,8 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// セッションにReservation型のデータを保存する
-	// main.goでReservation型をシリアライズしているので保存が可能になっている
 	m.App.Session.Put(r.Context(), "reservation", reservation)
 
-	// セッションにデータ保存後に、サマリーページにリダイレクトしている
-	// StatusSeeOtherは303
 	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 
 }
@@ -212,7 +201,7 @@ func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "search-availability.page.tmpl", &models.TemplateData{})
 }
 
-// PostAvailability return the availability for the given date
+// PostAvailability renders the search availability page
 func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -314,7 +303,6 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 		w.Write(out)
 		return
 	}
-
 	resp := jsonResponse{
 		OK:        available,
 		Message:   "",
@@ -325,15 +313,14 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	// I removed the error check, since we handle all aspects of
 	// the json right here
-	// MarshalIndentは、JSONを書き込む時にインデントとprefixを付与する
-	out, err := json.MarshalIndent(resp, "", "     ")
+	out, _ := json.MarshalIndent(resp, "", "     ")
 
-	// JSONをHTTPレスポンスで送る際には、ヘッダーにContent-Typeを設定する
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
+
 }
 
-// Contact renders the contact page
+// Contact renders the search availability page
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "contact.page.tmpl", &models.TemplateData{})
 }
@@ -342,7 +329,7 @@ func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		m.App.ErrorLog.Println("Can't get error from session")
+		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}

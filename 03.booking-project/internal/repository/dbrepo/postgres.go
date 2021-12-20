@@ -13,17 +13,14 @@ func (m *postgresDBRepo) AllUsers() bool {
 
 // InsertReservation inserts a reservation into the database
 func (m *postgresDBRepo) InsertReservation(res models.Reservation) (int, error) {
-
-	// トランザクションが3秒で終わらない場合は、キャンセルする
-	// トランザクションの途中でネットワーク接続が切れるなどのケースを想定して。
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	var newID int
 
-	stmt := `insert into reservations (first_name, last_name, email, phone,
-					start_date, end_date, room_id, created_at, updated_at)
-					values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
+	stmt := `insert into reservations (first_name, last_name, email, phone, start_date,
+			end_date, room_id, created_at, updated_at) 
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
 
 	err := m.DB.QueryRowContext(ctx, stmt,
 		res.FirstName,

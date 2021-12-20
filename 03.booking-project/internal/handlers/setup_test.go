@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -24,49 +25,46 @@ var session *scs.SessionManager
 var pathToTemplates = "./../../templates"
 var functions = template.FuncMap{}
 
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
-
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	app.InfoLog = infoLog
-
-	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	app.ErrorLog = errorLog
 
 	// change this to true when in production
 	app.InProduction = false
 
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
 	session = scs.New()
-	// クッキーの有効期限を設定
 	session.Lifetime = 24 * time.Hour
-	// クッキーの永続化設定
 	session.Cookie.Persist = true
-	// クッキーのSameSite属性
 	session.Cookie.SameSite = http.SameSiteLaxMode
-	// クッキーの暗号化設定
 	session.Cookie.Secure = app.InProduction
 
 	app.Session = session
 
 	tc, err := CreateTestTemplateCache()
 	if err != nil {
-		log.Fatal(err)
 		log.Fatal("cannot create template cache")
 	}
 
 	app.TemplateCache = tc
-	app.UseCache = true //
+	app.UseCache = true
 
-	repo := NewRepo(&app)
+	repo := NewTestRepo(&app)
 	NewHandlers(repo)
+	render.NewRenderer(&app)
 
-	render.NewTemplates(&app)
+	os.Exit(m.Run())
+}
 
+func getRoutes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Recoverer)
-	// mux.Use(WriteToConsole)
-	// mux.Use(NoSurf)
+	//mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
 	mux.Get("/", Repo.Home)
@@ -84,15 +82,13 @@ func getRoutes() http.Handler {
 	mux.Post("/make-reservation", Repo.PostReservation)
 	mux.Get("/reservation-summary", Repo.ReservationSummary)
 
-	// FileServerは、ルートからのファイルシステムのパスを指定して、そのパスに対応するファイルをHTTPリクエストを提供するハンドラを返す
-	// Dirは、特定のディレクトリツリーに限定されたネイティブファイルシステムを提供する
 	fileServer := http.FileServer(http.Dir("./static/"))
-	// StripPrefixは、リクエストURLのパスから指定されたプレフィクスを削除したハンドラを返す
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	return mux
 }
 
+// NoSurf adds CSRF protection to all POST requests
 func NoSurf(next http.Handler) http.Handler {
 	csrfHandler := nosurf.New(next)
 
@@ -105,7 +101,7 @@ func NoSurf(next http.Handler) http.Handler {
 	return csrfHandler
 }
 
-// SessionLoad loads and saves session data for current request
+// SessionLoad loads and saves the session on every request
 func SessionLoad(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
 }
