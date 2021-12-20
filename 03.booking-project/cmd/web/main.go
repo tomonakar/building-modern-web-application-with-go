@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/smtp"
 	"os"
 	"time"
 
@@ -33,12 +32,18 @@ func main() {
 	}
 	defer db.SQL.Close()
 
-	from := "me@here.com"
-	auth := smtp.PlainAuth("", from, "", "localhost")
-	err = smtp.SendMail("localhost:1025", auth, from, []string{"tomohisa.nak@gmail.com"}, []byte("Hello, world"))
-	if err != nil {
-		log.Println(err)
-	}
+	defer close(app.MailChan)
+
+	fmt.Println("Starting mail listener...")
+	listenForMail()
+
+	// Goの標準メールライブラリを使用したサンプル
+	// from := "me@here.com"
+	// auth := smtp.PlainAuth("", from, "", "localhost")
+	// err = smtp.SendMail("localhost:1025", auth, from, []string{"tomohisa.nak@gmail.com"}, []byte("Hello, world"))
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
@@ -62,7 +67,10 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Restriction{})
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
-	// gob.Register(models.RoomRestriction{})
+	gob.Register(models.RoomRestriction{})
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 
 	// change this to true when in production
 	app.InProduction = false
