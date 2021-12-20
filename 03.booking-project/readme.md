@@ -66,3 +66,7 @@ soda generate sql SeedRoomsTable
 soda generate sql SeedRestrictions
 
 ```
+
+
+## ローカルでのメールテストツール
+- [mailhog](https://github.com/mailhog/MailHog)
