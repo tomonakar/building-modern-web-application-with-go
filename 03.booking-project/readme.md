@@ -70,3 +70,7 @@ soda generate sql SeedRestrictions
 
 ## ローカルでのメールテストツール
 - [mailhog](https://github.com/mailhog/MailHog)
+
+
+## Eメールのテンプレートをスタイリング
+- [Foundation for Emails 2](https://www.udemy.com/course/building-modern-web-applications-with-go/learn/lecture/23543998#questions)
