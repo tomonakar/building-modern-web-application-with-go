@@ -41,6 +41,13 @@ func routes(app *config.AppConfig) http.Handler {
 	// FileServerは、ルートからのファイルシステムのパスを指定して、そのパスに対応するファイルをHTTPリクエストを提供するハンドラを返す
 	// Dirは、特定のディレクトリツリーに限定されたネイティブファイルシステムを提供する
 	fileServer := http.FileServer(http.Dir("./static/"))
+
+	mux.Route("/admin", func(mux chi.Router) {
+		mux.Use(Auth)
+
+		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
+	})
+
 	// StripPrefixは、リクエストURLのパスから指定されたプレフィクスを削除したハンドラを返す
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
