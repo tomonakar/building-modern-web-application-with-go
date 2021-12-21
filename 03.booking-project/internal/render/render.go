@@ -28,8 +28,13 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.Error = app.Session.PopString(r.Context(), "error")
-	// CSRFトークンを作成
-	td.CSRFToken = nosurf.Token(r)
+	td.CSRFToken = nosurf.Token(r) // CSRFトークンを作成
+	if app.Session.Exists(r.Context(), "user_id") {
+		td.IsAuthenticated = 1
+	} else {
+		td.IsAuthenticated = 0
+	}
+
 	return td
 
 }
