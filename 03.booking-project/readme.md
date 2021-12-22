@@ -74,3 +74,20 @@ soda generate sql SeedRestrictions
 
 ## Eメールのテンプレートをスタイリング
 - [Foundation for Emails 2](https://www.udemy.com/course/building-modern-web-applications-with-go/learn/lecture/23543998#questions)
+
+
+## 管理画面のテンプレート
+- [RoyalUI Dashboard](https://www.bootstrapdash.com/product/royalui/)
+
+## データテーブル
+- [Simple-Datatables](https://github.com/fiduswriter/Simple-DataTables)
+
+## dotenv
+- [godotenv](https://github.com/joho/godotenv)
+
+## POP
+- [gobuffalo/pop](https://github.com/gobuffalo/pop)
+
+## cf
+- [Microservices in Golang - Part 1](https://ewanvalentine.io/microservices-in-golang-part-1/)
+-[gRPC Beginners Tutorial](https://tutorialedge.net/golang/go-grpc-beginners-tutorial/)
